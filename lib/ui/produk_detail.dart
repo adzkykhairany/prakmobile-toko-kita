@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:tokokita/bloc/produk_bloc.dart';
 import 'package:tokokita/model/produk.dart';
 import 'package:tokokita/ui/produk_form.dart';
+import 'package:tokokita/ui/produk_page.dart';
 
 class ProdukDetail extends StatefulWidget {
-  final Produk? produk;
-
+  Produk? produk;
   ProdukDetail({Key? key, this.produk}) : super(key: key);
 
   @override
@@ -16,24 +17,24 @@ class _ProdukDetailState extends State<ProdukDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detail Produk Adzky'), // Hapus const pada Text
+        title: const Text('Detail Produk Adzky'),
       ),
       body: Center(
         child: Column(
           children: [
             Text(
               "Kode : ${widget.produk!.kodeProduk}",
-              style: TextStyle(fontSize: 20.0),
+              style: const TextStyle(fontSize: 20.0),
             ),
             Text(
               "Nama : ${widget.produk!.namaProduk}",
-              style: TextStyle(fontSize: 18.0),
+              style: const TextStyle(fontSize: 18.0),
             ),
             Text(
-              "Harga : Rp. ${widget.produk!.hargaProduk.toString()}",
-              style: TextStyle(fontSize: 18.0),
+              "Harga : ${widget.produk!.hargaProduk.toString()}",
+              style: const TextStyle(fontSize: 18.0),
             ),
-            _tombolHapusEdit(),
+            _tombolHapusEdit()
           ],
         ),
       ),
@@ -44,46 +45,44 @@ class _ProdukDetailState extends State<ProdukDetail> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
+//Tombol Edit
         OutlinedButton(
-          child: Text("EDIT"),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ProdukForm(produk: widget.produk!),
-              ),
-            );
-          },
-        ),
+            child: const Text("EDIT"),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ProdukForm(
+                            produk: widget.produk!,
+                          )));
+            }),
+//Tombol Hapus
         OutlinedButton(
-          child: Text("DELETE"),
-          onPressed: () => confirmHapus(),
-        ),
+            child: const Text("DELETE"), onPressed: () => confirmHapus()),
       ],
     );
   }
 
   void confirmHapus() {
     AlertDialog alertDialog = AlertDialog(
-      content: Text("Yakin ingin menghapus data ini?"), // Hapus const pada Text
+      content: const Text("Yakin ingin menghapus data ini?"),
       actions: [
+//tombol hapus
         OutlinedButton(
-          child: Text("Ya"),
+          child: const Text("Ya"),
           onPressed: () {
-            // Tambahkan logika penghapusan data di sini
-            Navigator.pop(context);
+            ProdukBloc.deleteProduk(id: widget.produk!.id);
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const ProdukPage()));
           },
         ),
+//tombol batal
         OutlinedButton(
-          child: Text("Batal"),
+          child: const Text("Batal"),
           onPressed: () => Navigator.pop(context),
-        ),
+        )
       ],
     );
-
-    showDialog(
-      builder: (context) => alertDialog,
-      context: context,
-    );
+    showDialog(builder: (context) => alertDialog, context: context);
   }
 }
